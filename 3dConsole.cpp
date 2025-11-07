@@ -1,14 +1,4 @@
-﻿/*
- * BİRLEŞTİRİLMİŞ 3D KONSOL UYGULAMASI
- * * Bu dosya, aşağıdaki dosyaların içeriğini birleştirir:
- * - load.hpp
- * - mathh.hpp
- * - 3dConsole.cpp
- *
- * Derlemek için 'json.hpp' dosyasının aynı dizinde olması gerekir.
- */
-
- // --- Başlangıç: Gerekli Include Dosyaları ---
+/**/
 #include <windows.h>
 #include <iostream>
 #include <fstream>
@@ -23,14 +13,11 @@
 #include <cmath>
 #include <array> 
 #include <algorithm>
+#include <conio.h>
 #include <omp.h> // paralel for
 
-// json.hpp hariç tutuldu, ancak projenin çalışması için gereklidir
+
 #include "json.hpp" 
-// --- Bitiş: Gerekli Include Dosyaları ---
-
-
-// --- Başlangıç: load.hpp içeriği ---
 
 using json = nlohmann::json;
 using namespace std;
@@ -338,14 +325,8 @@ void print_screen(wchar_t c) {
     }
 }
 
-void initalize(int param);
-
-float standartZ = 5.0f;
-
 void initalize(int param) {
     if (param == 0) {
-        cout << "Distance?";
-        cin >> standartZ;
         cout << "Width? ";
         cin >> width;
         cout << "Height? ";
@@ -460,11 +441,11 @@ void DensityMapToFramebufferAVX(
 int main() {
     initalize(0);
 
-    fovX = 2 * atan(tan(fovY / 2) * (float(width) / float(height)));
+    fovX = 3 * atan(tan(fovY / 2) * (float(width) / float(height)));
     ratioX = tan(fovY / 2);
     ratioY = tan(fovX / 2);
 
-    float position[3] = { 0.0f, 0.0f, standartZ };
+    float position[3] = { 0.0f, 0.0f, 6.0f };
     float scale[3] = { 1.0f, 1.0f, 1.0f };
     float rotation[3] = { 1.0f, 0.0f, 0.0f };
 
@@ -486,8 +467,32 @@ int main() {
         lastTime = currentTime;
         float fps = 1.0f / delta.count();
 
-        rot += 0.5f * delta.count();
-        rotation[1] = rot;
+        if (_kbhit()) {
+            char key = _getch();
+
+            switch (key) {
+            case 'e': rotation[2] += delta.count(); break;
+            case 'q': rotation[2] -= delta.count(); break;
+
+            case 'w': rotation[0] += delta.count(); break;
+            case 's': rotation[0] -= delta.count(); break;
+
+            case 'd': rotation[1] += delta.count(); break;
+            case 'a': rotation[1] -= delta.count(); break;
+
+            case 72: position[2] += delta.count(); break; //ileri forward
+            case 80: position[2] -= delta.count(); break; //geri back
+            case 75: position[0] += delta.count(); break; //sol left
+            case 77: position[0] -= delta.count(); break; //sağ right
+
+            case 'o': position[1] += delta.count(); break; //yukarı up
+            case 'p': position[1] -= delta.count(); break; //aşağı down
+            default: break;
+            
+            }
+        }
+
+        if (rot > 3.141592f * 2) rot -= 3.141592f*2;
 
         // ---------------- İşlem ----------------
 
@@ -513,8 +518,9 @@ int main() {
         //this_thread::sleep_for(chrono::milliseconds(200));
 
         updateFPS(fps);
-        wcout << L"AvarageFPS(last 50): " << avgFPS;
+        wcout << L"AvarageFPS(last 50): " << avgFPS << " \n "
+            << "pos:("<<position[0]<<","<<position[1]<<","<<position[2]<<") || "
+            << "pos:("<<rotation[0]<<","<<rotation[1]<<","<<rotation[2]<<")";
         cout.flush();
     }
-}
-// --- Bitiş: 3dConsole.cpp içeriği ---
+} /**/
