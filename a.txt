@@ -1,0 +1,16 @@
++framebufferlı ekran yazdırmacı ayarla
++çokbytlı desteğini aç
++chars.json yükle 2x4 parçalı olan
++m256 vektörlerine dönüştür
++paralel iki list oluştur değerler ve karakter
++yakınlık hesaplayıcı yap
++en yakın seçici yap
++3d obje verisi yükle
++transform uygula
++2d ye çevir perspektif ile
++obje verisi üzerinden edge üret
++pxBuffer piksel yoğunluk haritası üret
++yoğunluk haritası üzerinden karakter seç ve character buffer üret
++ekrana bas
+
++tuş ile cismi hareket ettir
